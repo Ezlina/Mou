@@ -7,7 +7,6 @@ namespace MouseMobile
 {
     public class ModEntry : Mod
     {
-        private bool mouseMode = true;
         private int lastScroll = 0;
 
         public override void Entry(IModHelper helper)
@@ -17,23 +16,21 @@ namespace MouseMobile
 
         private void OnUpdate(object sender, UpdateTickedEventArgs e)
         {
-            if (!Context.IsWorldReady || !mouseMode)
+            if (!Context.IsWorldReady)
                 return;
 
             MouseState mouse = Mouse.GetState();
-            KeyboardState keyboard = Keyboard.GetState();
-            GamePadState gamepad = GamePad.GetState(PlayerIndex.One);
 
-            // Left click = Use tool
+            // Left click = use tool
             if (mouse.LeftButton == ButtonState.Pressed)
             {
-                Game1.pressUseToolButton(keyboard, mouse, gamepad);
+                Game1.didPlayerJustLeftClick(true);
             }
 
-            // Right click = Action
+            // Right click = action
             if (mouse.RightButton == ButtonState.Pressed)
             {
-                Game1.pressActionButton(keyboard, mouse, gamepad);
+                Game1.didPlayerJustRightClick(true);
             }
 
             // Scroll wheel = change item
