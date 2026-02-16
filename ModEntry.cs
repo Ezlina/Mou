@@ -12,17 +12,7 @@ namespace MouseMobile
 
         public override void Entry(IModHelper helper)
         {
-            helper.Events.Input.ButtonPressed += OnButtonPressed;
             helper.Events.GameLoop.UpdateTicked += OnUpdate;
-        }
-
-        private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
-        {
-            if (e.Button == SButton.F8)
-            {
-                mouseMode = !mouseMode;
-                Game1.addHUDMessage(new HUDMessage("Mouse Mode: " + (mouseMode ? "ON" : "OFF")));
-            }
         }
 
         private void OnUpdate(object sender, UpdateTickedEventArgs e)
@@ -31,17 +21,22 @@ namespace MouseMobile
                 return;
 
             MouseState mouse = Mouse.GetState();
+            KeyboardState keyboard = Keyboard.GetState();
+            GamePadState gamepad = GamePad.GetState(PlayerIndex.One);
 
+            // Left click = Use tool
             if (mouse.LeftButton == ButtonState.Pressed)
             {
-                Game1.pressUseToolButton();
+                Game1.pressUseToolButton(keyboard, mouse, gamepad);
             }
 
+            // Right click = Action
             if (mouse.RightButton == ButtonState.Pressed)
             {
-                Game1.pressActionButton(Game1.player);
+                Game1.pressActionButton(keyboard, mouse, gamepad);
             }
 
+            // Scroll wheel = change item
             if (mouse.ScrollWheelValue != lastScroll)
             {
                 if (mouse.ScrollWheelValue > lastScroll)
